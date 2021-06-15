@@ -5,6 +5,13 @@ from random_select import *
 from pdf import *
 from enum import Enum
 
+# colour in HEX
+buttons = wx.Colour( 246, 128, 36 ) #RGB
+background = wx.Colour( 251, 226, 10 ) #RGB
+other_boxes = wx.Colour( 0, 128, 230 ) #RGB
+grid_label = wx.Colour( 0, 166, 228 )
+grid_text = wx.Colour( 150, 217, 235 )
+
 
 # Enum Class for group selection
 class GroupName(Enum):
@@ -18,10 +25,10 @@ class Groups(wx.Panel):
     def __init__(self, parent, *args, **kwds):
         # begin Groups.__init__
         kwds["style"] = kwds.get("style", 0)
+
         wx.Panel.__init__(self, parent, *args, **kwds)
 
-        self.SetMinSize((480, 150))
-        #self.SetBackgroundColour(wx.Colour(255, 255, 255))
+        self.SetMinSize((480, 160))
 
         self.parent = parent
 
@@ -35,6 +42,9 @@ class Groups(wx.Panel):
         # for naming the columns as x and y
         self.mygrid.SetColLabelValue(0, 'Group A')
         self.mygrid.SetColLabelValue(1, 'Group B')
+
+        # set the back ground color of the row and column label
+        self.mygrid.SetLabelBackgroundColour(grid_label)
 
         # to remove the label of the rows
         self.mygrid.SetRowLabelSize(0)
@@ -54,6 +64,9 @@ class MainPanel(wx.Panel):
         # begin MainPanel.__init__
         kwds["style"] = kwds.get("style", 0)
         wx.Panel.__init__(self, *args, **kwds)
+
+        # set the background color
+        self.SetBackgroundColour( background )
 
         self.teams = []
         self.copy_teams = [] # for copying the teams in order to save
@@ -87,9 +100,11 @@ class MainPanel(wx.Panel):
 
         self.txt_add_team_name = wx.TextCtrl(self, wx.ID_ANY, "")
         self.txt_add_team_name.SetMinSize((220, -1))
+        self.txt_add_team_name.SetBackgroundColour( other_boxes )
         teams_add_sizer.Add(self.txt_add_team_name, 0, wx.ALL, 4)
 
         self.btn_team_name = wx.Button(self, wx.ID_ANY, "Add")
+        self.btn_team_name.SetBackgroundColour( buttons )
         teams_add_sizer.Add(self.btn_team_name, 0, wx.ALL, 4)
 
         import_teams_sizer = wx.BoxSizer(wx.HORIZONTAL)
@@ -101,6 +116,7 @@ class MainPanel(wx.Panel):
         import_teams_sizer.Add((60, 20), 0, 0, 0)
 
         self.btn_import = wx.Button(self, wx.ID_ANY, "Import")
+        self.btn_import.SetBackgroundColour( buttons )
         import_teams_sizer.Add(self.btn_import, 0, wx.ALL, 4)
 
         radiobox_sizer = wx.BoxSizer(wx.HORIZONTAL)
@@ -113,6 +129,7 @@ class MainPanel(wx.Panel):
 
         self.radio_box = wx.RadioBox(self, wx.ID_ANY, "", choices=["2", "3", "4"], majorDimension=1, style=wx.RA_SPECIFY_COLS)
         self.radio_box.SetSelection(0)
+        self.radio_box.SetBackgroundColour( other_boxes )
         radiobox_sizer.Add(self.radio_box, 0, wx.ALL, 4)
 
         combobox_sizer = wx.BoxSizer(wx.HORIZONTAL)
@@ -125,6 +142,7 @@ class MainPanel(wx.Panel):
 
         self.combo_box = wx.ComboBox(self, wx.ID_ANY, choices=["One by One", "All in One"], style=wx.CB_DROPDOWN)
         self.combo_box.SetSelection(0)
+        self.combo_box.SetBackgroundColour( other_boxes )
         combobox_sizer.Add(self.combo_box, 0, wx.ALL, 4)
 
         directory_sizer = wx.BoxSizer(wx.HORIZONTAL)
@@ -142,10 +160,12 @@ class MainPanel(wx.Panel):
         top_left_sizer.Add(top_left_below_sizer, 0, wx.EXPAND, 0)
 
         self.btn_generate = wx.Button(self, wx.ID_ANY, "Generate Teams")
+        self.btn_generate.SetBackgroundColour( buttons )
         top_left_below_sizer.Add(self.btn_generate, 0, wx.ALL, 4)
 
         self.btn_remove = wx.Button(self, wx.ID_ANY, "Remove Teams")
         self.btn_remove.Enable(False)
+        self.btn_remove.SetBackgroundColour( buttons )
         top_left_below_sizer.Add(self.btn_remove, 0, wx.ALL, 4)
 
         top_sizer.Add((20, 20), 0, 0, 0)
@@ -158,6 +178,7 @@ class MainPanel(wx.Panel):
 
         self.txt_team_names = wx.ListBox(self, id=wx.ID_ANY, choices=[], style=wx.LB_SINGLE|wx.LB_NEEDED_SB)
         self.txt_team_names.SetMinSize((420, -1))
+        self.txt_team_names.SetBackgroundColour( other_boxes )
         top_right_sizer.Add(self.txt_team_names, 1, 0, 0)
 
         below_sizer = wx.BoxSizer(wx.HORIZONTAL)
@@ -174,14 +195,17 @@ class MainPanel(wx.Panel):
         below_sizer.Add(button_sizer, 0, wx.EXPAND, 0)
 
         self.btn_new = wx.Button(self, wx.ID_ANY, "New")
+        self.btn_new.SetBackgroundColour( buttons )
         button_sizer.Add(self.btn_new, 0, wx.ALL, 4)
 
         self.btn_save = wx.Button(self, wx.ID_ANY, "Save")
+        self.btn_save.SetBackgroundColour( buttons )
         button_sizer.Add(self.btn_save, 0, wx.ALL, 4)
 
-        button_sizer.Add((20, 60), 0, 0, 0)
+        button_sizer.Add((0, 70), 0, 0, 0)
 
         self.btn_exit = wx.Button(self, wx.ID_ANY, "Exit")
+        self.btn_exit.SetBackgroundColour( buttons )
         button_sizer.Add(self.btn_exit, 0, wx.ALL, 4)
 
         self.SetSizer(main_sizer)
@@ -327,13 +351,15 @@ class MainPanel(wx.Panel):
                 # insert the teams in dictionary
                 for r in range(len(team)):
                     self.dict_groups["Group "+chr(self.c)] = team[r]
-                    self.c += 1 # then goes for B, C, D, .....
+                    self.c += 1  # then goes for B, C, D, .....
 
                 self.groups.mygrid.AppendRows(numRows=len(team[0]))
+
                 for i in range(len(team)):
                     row = 0
                     for k in team[i]:
                         self.groups.mygrid.SetCellValue(row, i, k)
+                        self.groups.mygrid.SetCellBackgroundColour(row, i, grid_text)
                         self.groups.mygrid.AutoSize()
                         row += 1
                 ev.Enable(False)
@@ -376,11 +402,14 @@ class MainPanel(wx.Panel):
                     # append row after completing all the columns
                     self.groups.mygrid.AppendRows(numRows=1)
                 self.groups.mygrid.SetCellValue(self.teamRow, self.groupCol, team)
+                self.groups.mygrid.SetCellBackgroundColour(self.teamRow, self.groupCol, grid_text)
+                self.groups.mygrid.SetCellBackgroundColour(self.teamRow, self.groupCol+1, background)
                 self.groups.mygrid.AutoSize()
 
                 # if the last 2 teams left the last team will be auto inserted without pressing generate button
                 if self.teamRow == (self.N // int(self.radio_box.GetString(self.radio_box.GetSelection())))-1 and self.groupCol == int(self.radio_box.GetString(self.radio_box.GetSelection()))-2:
                     self.groups.mygrid.SetCellValue(self.teamRow, self.groupCol+1, self.teams[-1])
+                    self.groups.mygrid.SetCellBackgroundColour(self.teamRow, self.groupCol+1, grid_text)
                     self.groups.mygrid.AutoSize()
                     self.dict_groups["Group " + chr(self.c)].append(self.teams[-1])
                     ev.Enable(False)
@@ -491,7 +520,12 @@ class MyFrame(wx.Frame):
         # begin MyFrame.__init__
         kwds["style"] = kwds.get("style", 0) | wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX)
         wx.Frame.__init__(self, *args, **kwds)
-        self.SetSize((840, 450))
+        # to set the icon
+        icon = wx.Icon() #wx.EmptyIcon()
+        icon.CopyFromBitmap(wx.Bitmap("icon.png", wx.BITMAP_TYPE_ANY))
+        self.SetIcon(icon)
+
+        self.SetSize((840, 455))
         self.SetTitle("Group Selection")
 
         self.MainPanel = MainPanel(self, wx.ID_ANY)
